@@ -1,0 +1,2 @@
+rootProject.name = "Ui Skills"
+include ':app'
