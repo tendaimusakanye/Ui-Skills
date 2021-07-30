@@ -16,7 +16,7 @@
             app:destination="@id/itemDetailsFragment" />
 
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/itemDetailsFragment"
         android:name="k7tech.agency.uiskills.ItemDetailsFragment"
         android:label="Item Details"

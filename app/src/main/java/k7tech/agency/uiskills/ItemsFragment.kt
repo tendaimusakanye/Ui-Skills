@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemsFragment : Fragment() {
-    private val itemsAdapter = ItemsAdapter()
+class ItemsFragment : Fragment(),MyItemClickListener {
+    private val itemsAdapter = ItemsAdapter(this)
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_items, container, false)
@@ -20,9 +22,14 @@ class ItemsFragment : Fragment() {
         recyclerView.adapter = itemsAdapter
         recyclerView.setHasFixedSize(true)
     }
+
+    override fun onItemClick(item: Item) {
+        findNavController().navigate(R.id.open_modal_sheet)
+    }
 }
 
-class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
+class ItemsAdapter(private val itemClickListener: MyItemClickListener) :
+    RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     private val itemsList = listOf(
         Item("Item 1", "Description 1"),
         Item("Item 2", "Description 2"),
@@ -32,11 +39,16 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
-        return ItemsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
+        val viewHolder = ItemsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
+        viewHolder.itemView.setOnClickListener { view ->
+            itemClickListener.onItemClick(view.tag as Item)
+        }
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
         val item = itemsList[position]
+        holder.itemView.tag = item
         holder.bind(item)
     }
 
@@ -57,4 +69,8 @@ data class Item(
     var title: String,
     var description: String
 )
+
+interface MyItemClickListener {
+    fun onItemClick(item: Item)
+}
 
