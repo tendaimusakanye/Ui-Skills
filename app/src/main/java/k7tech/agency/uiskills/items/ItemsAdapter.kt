@@ -1,32 +1,12 @@
-package k7tech.agency.uiskills
+package k7tech.agency.uiskills.items
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
-
-class ItemsFragment : Fragment(),MyItemClickListener {
-    private val itemsAdapter = ItemsAdapter(this)
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_items, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.items_recycler_view)
-        recyclerView.adapter = itemsAdapter
-        recyclerView.setHasFixedSize(true)
-    }
-
-    override fun onItemClick(item: Item) {
-        findNavController().navigate(R.id.open_modal_sheet)
-    }
-}
+import k7tech.agency.uiskills.R
 
 class ItemsAdapter(private val itemClickListener: MyItemClickListener) :
     RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
@@ -40,8 +20,8 @@ class ItemsAdapter(private val itemClickListener: MyItemClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
         val viewHolder = ItemsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
-        viewHolder.itemView.setOnClickListener { view ->
-            itemClickListener.onItemClick(view.tag as Item)
+        viewHolder.itemView.setOnClickListener {
+            itemClickListener.onItemClick(it.tag as Item)
         }
         return viewHolder
     }
@@ -55,22 +35,18 @@ class ItemsAdapter(private val itemClickListener: MyItemClickListener) :
     override fun getItemCount(): Int = 5
 
     inner class ItemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var switch = itemView.findViewById<SwitchCompat>(R.id.switch_item_clicked)
         private var title = itemView.findViewById<TextView>(R.id.item_title)
         private var description = itemView.findViewById<TextView>(R.id.item_description)
 
         fun bind(item: Item) {
             title.text = item.title
             description.text = item.description
+            switch.isChecked = !switch.isChecked
         }
     }
 }
 
-data class Item(
-    var title: String,
-    var description: String
-)
-
 interface MyItemClickListener {
     fun onItemClick(item: Item)
 }
-

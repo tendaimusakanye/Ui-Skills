@@ -18,7 +18,7 @@
     </fragment>
     <dialog
         android:id="@+id/itemDetailsFragment"
-        android:name="k7tech.agency.uiskills.ItemDetailsFragment"
+        android:name="k7tech.agency.uiskills.items.CheckItemFragment"
         android:label="Item Details"
         tools:layout="@layout/fragment_item_details" />
 
