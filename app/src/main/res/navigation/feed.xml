@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/feedFragment"
-        android:name="k7tech.agency.uiskills.FeedFragment"
+        android:name="k7tech.agency.uiskills.feed.FeedFragment"
         android:label="@string/title_feed"
         tools:layout="@layout/fragment_feed">
 

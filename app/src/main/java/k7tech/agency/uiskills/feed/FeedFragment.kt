@@ -1,4 +1,4 @@
-package k7tech.agency.uiskills
+package k7tech.agency.uiskills.feed
 
 import android.os.Bundle
 import android.view.LayoutInflater
