@@ -1,15 +1,14 @@
-package k7tech.agency.uiskills
+package k7tech.agency.uiskills.other
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import k7tech.agency.uiskills.R
 
-
-class SearchFragment : Fragment() {
+class SettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_search,container,false)
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
-
 }
