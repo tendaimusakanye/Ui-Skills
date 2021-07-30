@@ -9,9 +9,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import k7tech.agency.uiskills.R
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var toolbar: Toolbar
@@ -31,11 +31,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.feedFragment, R.id.searchFragment, R.id.settingsFragment)
         )
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.feedFragment) toolbar.navigationIcon = null
-
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
