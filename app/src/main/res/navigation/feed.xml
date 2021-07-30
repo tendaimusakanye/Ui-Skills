@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/feed"
+    app:startDestination="@id/feedFragment">
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="k7tech.agency.uiskills.FeedFragment"
+        android:label="@string/title_feed"
+        tools:layout="@layout/fragment_feed">
+
+        <action
+            android:id="@+id/open_modal_sheet"
+            app:destination="@id/itemDetailsFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/itemDetailsFragment"
+        android:name="k7tech.agency.uiskills.ItemDetailsFragment"
+        android:label="Item Details"
+        tools:layout="@layout/fragment_item_details" />
+
+</navigation>
