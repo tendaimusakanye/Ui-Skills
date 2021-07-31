@@ -13,18 +13,15 @@
 
         <action
             android:id="@+id/to_bottom_sheet"
-            app:destination="@id/itemDetailsFragment" />
+            app:destination="@id/checkItemFragment" />
 
     </fragment>
     <dialog
-        android:id="@+id/itemDetailsFragment"
+        android:id="@+id/checkItemFragment"
         android:name="k7tech.agency.uiskills.items.CheckItemFragment"
         android:label="Item Details"
         tools:layout="@layout/fragment_check_item">
 
-        <action
-            android:id="@+id/to_feed"
-            app:destination="@id/feedFragment" />
         <argument
             android:name="title"
             app:argType="string" />
