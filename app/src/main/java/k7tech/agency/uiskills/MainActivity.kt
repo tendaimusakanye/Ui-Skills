@@ -9,9 +9,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import k7tech.agency.uiskills.R
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var toolbar: Toolbar
@@ -26,11 +26,10 @@ class MainActivity : AppCompatActivity() {
         val navHost = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
 
         navController = navHost.navController
-        findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
-
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.feedFragment, R.id.searchFragment, R.id.settingsFragment)
         )
+        findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
