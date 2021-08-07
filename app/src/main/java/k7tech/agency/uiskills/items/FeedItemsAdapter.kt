@@ -17,7 +17,8 @@ class FeedItemsAdapter(private val itemClickListener: MyItemClickListener) :
     )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItemsViewHolder {
-        val viewHolder = FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context)))
+        val viewHolder =
+            FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         viewHolder.itemView.setOnClickListener { itemClickListener.onItemClick(it.tag as Item) }
         return viewHolder
     }

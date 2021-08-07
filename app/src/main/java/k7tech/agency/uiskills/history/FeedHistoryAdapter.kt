@@ -13,7 +13,8 @@ class HistoryAdapter(private val itemClickListener: MyItemClickListener) :
     ListAdapter<Item, FeedItemsViewHolder>(HistoryItemsDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItemsViewHolder {
-        val viewHolder = FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context)))
+        val viewHolder =
+            FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         viewHolder.itemView.setOnClickListener { itemClickListener.onItemClick(it.tag as Item) }
         return viewHolder
     }
