@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import k7tech.agency.uiskills.Item
 import k7tech.agency.uiskills.R
+import k7tech.agency.uiskills.databinding.FragmentFeedItemsBinding
 import k7tech.agency.uiskills.feed.FeedFragmentDirections
 import k7tech.agency.uiskills.feed.FeedViewModel
 import k7tech.agency.uiskills.items.MyItemClickListener
@@ -22,16 +22,20 @@ class FeedHistoryFragment : Fragment(), MyItemClickListener {
 
     private val viewModel: FeedViewModel by viewModels({ requireParentFragment() })
     private val historyAdapter = HistoryAdapter(this)
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentFeedItemsBinding? = null
+    private val binding
+        get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feed_items, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentFeedItemsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView = view.findViewById(R.id.items_recycler_view)
-        recyclerView.adapter = historyAdapter
-        recyclerView.setHasFixedSize(true)
+        with(binding) {
+            itemsRecyclerView.adapter = historyAdapter
+            itemsRecyclerView.setHasFixedSize(true)
+        }
 
         viewModel.item.observe(viewLifecycleOwner, { newList ->
             historyAdapter.submitList(newList)
@@ -50,9 +54,9 @@ class FeedHistoryFragment : Fragment(), MyItemClickListener {
     }
 
     private fun checkItem(title: String) {
-        lifecycleScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch {
             val position = historyAdapter.getPositionOfItem(title)
-            val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
+            val viewHolder = binding.itemsRecyclerView.findViewHolderForAdapterPosition(position)
             val checkBox = viewHolder?.itemView?.findViewById<CheckBox>(R.id.checkBox)
 
             launch(Dispatchers.Main) {
@@ -64,6 +68,11 @@ class FeedHistoryFragment : Fragment(), MyItemClickListener {
     override fun onItemClick(item: Item) {
         viewModel.onItemClicked(item)
         findNavController().navigate(FeedFragmentDirections.toBottomSheet(item.title))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
 

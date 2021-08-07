@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import k7tech.agency.uiskills.Item
-import k7tech.agency.uiskills.R
+import k7tech.agency.uiskills.databinding.ItemBinding
 
 class FeedItemsAdapter(private val itemClickListener: MyItemClickListener) :
     RecyclerView.Adapter<FeedItemsViewHolder>() {
@@ -17,8 +17,7 @@ class FeedItemsAdapter(private val itemClickListener: MyItemClickListener) :
     )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItemsViewHolder {
-        val viewHolder =
-            FeedItemsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
+        val viewHolder = FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context)))
         viewHolder.itemView.setOnClickListener { itemClickListener.onItemClick(it.tag as Item) }
         return viewHolder
     }

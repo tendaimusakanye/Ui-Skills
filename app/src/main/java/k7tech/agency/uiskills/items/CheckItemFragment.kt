@@ -4,31 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import k7tech.agency.uiskills.R
+import k7tech.agency.uiskills.databinding.FragmentCheckItemBinding
 
 class CheckItemFragment : BottomSheetDialogFragment() {
 
     private val args: CheckItemFragmentArgs by navArgs()
+    private var _binding: FragmentCheckItemBinding? = null
+    private val binding
+        get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_check_item, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentCheckItemBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val button = view.findViewById<Button>(R.id.button_check_item)
-        val itemTextView = view.findViewById<TextView>(R.id.text_view_bottom_slide_item_title)
+        binding.textViewBottomSlideItemTitle.text = args.title
 
-        itemTextView.text = args.title
-
-        button.setOnClickListener {
+        binding.buttonCheckItem.setOnClickListener {
             parentFragmentManager.setFragmentResult(ITEM_TITLE, bundleOf(TITLE to args.title))
             dismiss()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
 

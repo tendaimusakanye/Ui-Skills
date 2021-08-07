@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import k7tech.agency.uiskills.Item
-import k7tech.agency.uiskills.R
+import k7tech.agency.uiskills.databinding.ItemBinding
 import k7tech.agency.uiskills.items.FeedItemsViewHolder
 import k7tech.agency.uiskills.items.MyItemClickListener
 
@@ -13,8 +13,7 @@ class HistoryAdapter(private val itemClickListener: MyItemClickListener) :
     ListAdapter<Item, FeedItemsViewHolder>(HistoryItemsDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItemsViewHolder {
-        val viewHolder =
-            FeedItemsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false))
+        val viewHolder = FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context)))
         viewHolder.itemView.setOnClickListener { itemClickListener.onItemClick(it.tag as Item) }
         return viewHolder
     }

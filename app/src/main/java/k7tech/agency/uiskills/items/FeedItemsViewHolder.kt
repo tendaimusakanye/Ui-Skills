@@ -1,17 +1,12 @@
 package k7tech.agency.uiskills.items
 
-import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import k7tech.agency.uiskills.Item
-import k7tech.agency.uiskills.R
+import k7tech.agency.uiskills.databinding.ItemBinding
 
-class FeedItemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private var title = itemView.findViewById<TextView>(R.id.item_title)
-    private var description = itemView.findViewById<TextView>(R.id.item_description)
-
+class FeedItemsViewHolder(private val binding: ItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Item) {
-        title.text = item.title
-        description.text = item.description
+        binding.itemTitle.text = item.title
+        binding.itemDescription.text = item.description
     }
 }
