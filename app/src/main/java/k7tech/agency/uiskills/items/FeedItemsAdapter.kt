@@ -4,21 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import k7tech.agency.uiskills.Item
-import k7tech.agency.uiskills.databinding.ItemBinding
+import k7tech.agency.uiskills.databinding.SimpleListItemBinding
 
 class FeedItemsAdapter(private val itemClickListener: MyItemClickListener) :
     RecyclerView.Adapter<FeedItemsViewHolder>() {
+
     private val itemsList = listOf(
         Item(786, "Item 1", "Description 1"),
         Item(4, "Item 2", "Description 2"),
         Item(4567, "Item 3", "Description 3"),
         Item(90, "Item 4", "Description 4"),
-        Item(34, "Item 5", "Description 5"),
+        Item(34, "Item 5", "Description 5")
     )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItemsViewHolder {
         val viewHolder =
-            FeedItemsViewHolder(ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            FeedItemsViewHolder(SimpleListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         viewHolder.itemView.setOnClickListener { itemClickListener.onItemClick(it.tag as Item) }
         return viewHolder
     }

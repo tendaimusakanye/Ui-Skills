@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<k7tech.agency.uiskills.widget.SimpleListItem xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="?selectableItemBackground">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@android:color/transparent"
+        android:clickable="false" />
+
+    <TextView
+        android:id="@+id/item_title"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="1"
+       android:text="@string/movie_name"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/item_description"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/dummy_text"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="2"
+         />
+
+</k7tech.agency.uiskills.widget.SimpleListItem>
