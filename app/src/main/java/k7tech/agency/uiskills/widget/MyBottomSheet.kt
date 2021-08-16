@@ -26,7 +26,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     private val dimBackgroundColor = 0x99000000
 
     /**
-     * How far the bottom sheet is from its default position. Range [0,1] where 0 = collapsed, 1 = expanded
+     * How far the bottom sheet is from its default position. Range [0,0.3] where 0 = collapsed, 0.3 = expanded
      */
     private var expandedOffset = 0f
 
@@ -49,8 +49,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
      * State of the bottom sheet.
      */
     enum class BottomSheetState {
-        //i.e either expanding or hiding
-        DRAGGING,
+        SCROLLING,
         EXPANDED,
         HIDDEN
     }
@@ -99,7 +98,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
         val result: Boolean
 
         if (bottomSheetView != child) {
-            // if main view clip against the slider;
+            // if main view clip against the slider so that the shadow is only drawn above the main view content.
             canvas?.getClipBounds(rect)
             canvas?.clipRect(rect)
 
@@ -174,7 +173,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
 
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            //Naively, Make the child measurements exactly as the imposed height and size of the displayWindow
+            //Naively make the child measurements exactly as the imposed height and size of the displayWindow
             //In real apps all edge cases should be handled e.g. considering margins and padding etc etc.
             val childWidthSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY)
             val childHeightSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY)
@@ -192,7 +191,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
                 return false
             }
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                // check to see if the clicked region is the faded region
+                // check to see if the clicked region is the dimmed region
                 if (expandedOffset > 0 && !isViewUnder(
                         bottomSheetView,
                         motionTouchEventX.toInt(),
@@ -235,16 +234,12 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     }
 
     fun setSheetState(state: BottomSheetState) {
-        // Abort any running animation, to allow state change
-        if (viewDragHelper.viewDragState == ViewDragHelper.STATE_SETTLING) viewDragHelper.abort()
-        if (state == sheetState || sheetState == BottomSheetState.DRAGGING) return
-
         setInternalSheetState(state)
 
         when (state) {
             BottomSheetState.EXPANDED -> smoothSlideTo(anchorPoint)
             BottomSheetState.HIDDEN -> smoothSlideTo(0.0f)
-            BottomSheetState.DRAGGING -> throw IllegalStateException("Sheet cannot be dragging")
+            BottomSheetState.SCROLLING -> throw IllegalStateException("Sheet cannot be scrolling")
         }
     }
 
@@ -261,8 +256,8 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     private fun computeExpandedOffset(topPosition: Int): Float {
         val topWhenHidden = computeTopPosition(0.0f)
 
-        return if (topPosition > topWhenHidden) {
-            ((topWhenHidden - topPosition) / bottomSheetView.measuredHeight).toFloat()
+        return if (topWhenHidden > topPosition) {
+            (topWhenHidden.toFloat() - topPosition.toFloat()) / bottomSheetView.measuredHeight.toFloat()
         } else {
             0.0f
         }
@@ -288,7 +283,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     //Called whenever the sheet is moving to the expanded or hidden position
     private fun onSheetMoved(topPosition: Int) {
         expandedOffset = computeExpandedOffset(topPosition)
-        setInternalSheetState(BottomSheetState.DRAGGING)
+        setInternalSheetState(BottomSheetState.SCROLLING)
         invalidate()
     }
 
@@ -312,6 +307,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
 
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
 
+        // the view to drag.
         override fun tryCaptureView(child: View, pointerId: Int): Boolean = child == bottomSheetView
 
         override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
@@ -319,13 +315,11 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
         }
 
         override fun onViewDragStateChanged(state: Int) {
+            // when the sheet has now settled. update the internal state.
             if (viewDragHelper.viewDragState == ViewDragHelper.STATE_IDLE) {
-                expandedOffset = computeExpandedOffset(bottomSheetView.top)
-
-                when (expandedOffset) {
-                    1.0f -> setInternalSheetState(BottomSheetState.EXPANDED)
-                    0.0f -> setInternalSheetState(BottomSheetState.HIDDEN)
-                    else -> setInternalSheetState(BottomSheetState.DRAGGING)
+                when (expandedOffset > 0.0) {
+                    true -> setInternalSheetState(BottomSheetState.EXPANDED)
+                    false -> setInternalSheetState(BottomSheetState.HIDDEN)
                 }
             }
         }
@@ -334,7 +328,6 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
             return bottomSheetView.measuredHeight
         }
     }
-
 }
 
 private const val DEFAULT_ANCHOR_POINT = 0.3f
