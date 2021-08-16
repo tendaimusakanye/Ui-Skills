@@ -6,7 +6,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
 import android.view.View
@@ -31,7 +30,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     private var expandedOffset = 0f
 
     /**
-     * Drawable used to give the bottom sheet a top shadow on its edge. Similar to a CardView shadow.
+     * Drawable used to give the bottom sheet a shadow on its top edge.
      */
     private var shadowDrawable: Drawable? = null
 
@@ -85,9 +84,8 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
 
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
-        // draw the shadow
+        // draw the small shadow above the bottom sheet.
         with(bottomSheetView) {
-            // draw the shadow above the bottom sheet.
             shadowDrawable?.setBounds(left, (top - shadowHeight).toInt(), right, top)
         }
         if (canvas != null) shadowDrawable?.draw(canvas)
@@ -207,21 +205,11 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
         return viewDragHelper.shouldInterceptTouchEvent(ev)
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return try {
-            viewDragHelper.processTouchEvent(event!!)
-            true
-        } catch (ex: Exception) {
-            Log.e("MyBottomSheet", ex.message!!)
-            false
-        }
-    }
-
     fun getSheetState(): BottomSheetState = sheetState
 
     /**
      * Provides an on click for the portion of the main view that is dimmed. The listener is not
-     * triggered is hidden.
+     * triggered if the bottom sheet is in state HIDDEN
      **/
     fun setOnDimClickListener(listener: OnClickListener) {
         onDimClickListener = listener
@@ -248,39 +236,39 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
      *  @param expandedOffset: current offset
      */
     private fun computeTopPosition(expandedOffset: Float): Int {
-        val tempOffset = (expandedOffset * bottomSheetView.measuredHeight).toInt()
-        return measuredHeight - tempOffset
+        val currentSheetHeight = (expandedOffset * bottomSheetView.measuredHeight).toInt()
+        return measuredHeight - currentSheetHeight
     }
 
-    // Compute expandedOffset based on the new topPosition
+    /**
+     *  Compute the current offSet of the bottom sheet given the top position
+     *  @param topPosition: current top position
+     */
     private fun computeExpandedOffset(topPosition: Int): Float {
         val topWhenHidden = computeTopPosition(0.0f)
 
         return if (topWhenHidden > topPosition) {
             (topWhenHidden.toFloat() - topPosition.toFloat()) / bottomSheetView.measuredHeight.toFloat()
-        } else {
-            0.0f
-        }
+        } else 0.0f
+
     }
 
     // I don't quite get this method yet. Copied the logic from the android framework
     private fun isViewUnder(view: View, x: Int, y: Int): Boolean {
         val viewLocation = IntArray(2)
         view.getLocationOnScreen(viewLocation)
-        Log.e("MyBottomSheet", viewLocation.toString())
+
         val parentLocation = IntArray(2)
         getLocationOnScreen(parentLocation)
-        Log.e("MyBottomSheet", parentLocation.toString())
+
         val screenX = parentLocation[0] + x
         val screenY = parentLocation[1] + y
-
-        Log.e("MyBottomSheet", "Screen X : $screenX, ScreenY: $screenY")
 
         return screenX >= viewLocation[0] && screenX < viewLocation[0] + view.width
                 && screenY >= viewLocation[1] && screenY < viewLocation[1] + view.height
     }
 
-    //Called whenever the sheet is moving to the expanded or hidden position
+    //Called whenever the sheet is scrolling to the expanded or hidden position
     private fun onSheetMoved(topPosition: Int) {
         expandedOffset = computeExpandedOffset(topPosition)
         setInternalSheetState(BottomSheetState.SCROLLING)
@@ -306,8 +294,7 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     }
 
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
-
-        // the view to drag.
+        // the view to drag or scroll.
         override fun tryCaptureView(child: View, pointerId: Int): Boolean = child == bottomSheetView
 
         override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {

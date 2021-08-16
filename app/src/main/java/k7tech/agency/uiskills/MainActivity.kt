@@ -25,14 +25,12 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
-        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
 
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         navController = navHost.navController
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.feedFragment, R.id.searchFragment, R.id.settingsFragment)
-        )
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.feedFragment, R.id.searchFragment, R.id.settingsFragment))
+
         with(binding) {
             bottomNav.setupWithNavController(navController)
 
@@ -46,13 +44,11 @@ class MainActivity : AppCompatActivity() {
             })
 
             buttonCheckItem.setOnClickListener {
-                val itemTitle = sheetItemTitle.text.toString()
-                viewModel.checkItemWithTitle(Pair(true, itemTitle))
                 myBottomSheet.setSheetState(BottomSheetState.HIDDEN)
+                viewModel.checkItemWithTitle(Pair(true, sheetItemTitle.text.toString()))
             }
         }
     }
-
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
