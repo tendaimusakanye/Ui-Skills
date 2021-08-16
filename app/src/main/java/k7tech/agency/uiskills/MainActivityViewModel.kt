@@ -1,19 +1,21 @@
-package k7tech.agency.uiskills.feed
+package k7tech.agency.uiskills
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import k7tech.agency.uiskills.Item
 import kotlinx.coroutines.launch
 
-class FeedViewModel : ViewModel() {
+class MainActivityViewModel : ViewModel() {
 
     private val _item = MutableLiveData<List<Item>>()
     val item: LiveData<List<Item>> = _item
 
     private val _title = MutableLiveData<String>()
     val title: LiveData<String> = _title
+
+    private val _pair = MutableLiveData<Pair<Boolean, String>>()
+    val pair: LiveData<Pair<Boolean, String>> = _pair
 
     private val itemsSet = mutableSetOf<Item>()
 
@@ -26,7 +28,11 @@ class FeedViewModel : ViewModel() {
         }
     }
 
-    fun checkItemWithTitle(title: String) {
+    fun displayBottomSheet(title: String) {
         _title.postValue(title)
+    }
+
+    fun checkItemWithTitle(pair: Pair<Boolean, String>) {
+        _pair.postValue(pair)
     }
 }

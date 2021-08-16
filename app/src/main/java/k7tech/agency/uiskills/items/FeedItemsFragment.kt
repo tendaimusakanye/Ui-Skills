@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import k7tech.agency.uiskills.Item
+import k7tech.agency.uiskills.MainActivityViewModel
 import k7tech.agency.uiskills.R
 import k7tech.agency.uiskills.databinding.FragmentFeedItemsBinding
-import k7tech.agency.uiskills.feed.FeedFragmentDirections
-import k7tech.agency.uiskills.feed.FeedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FeedItemsFragment : Fragment(), MyItemClickListener {
 
-    private val viewModel: FeedViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: MainActivityViewModel by activityViewModels()
     private val itemsAdapter = FeedItemsAdapter(this)
     private var _binding: FragmentFeedItemsBinding? = null
     private val binding
@@ -36,9 +34,9 @@ class FeedItemsFragment : Fragment(), MyItemClickListener {
             itemsRecyclerView.setHasFixedSize(true)
         }
 
-        viewModel.title.observe(viewLifecycleOwner, {
+        viewModel.pair.observe(viewLifecycleOwner, {
             lifecycleScope.launchWhenResumed {
-                checkItem(it)
+                if (it.first) checkItem(it.second)
             }
         })
     }
@@ -57,7 +55,7 @@ class FeedItemsFragment : Fragment(), MyItemClickListener {
 
     override fun onItemClick(item: Item) {
         viewModel.onItemClicked(item)
-        findNavController().navigate(FeedFragmentDirections.toBottomSheet(item.title))
+        viewModel.displayBottomSheet(item.title)
     }
 
     override fun onDestroy() {

@@ -6,21 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import k7tech.agency.uiskills.Item
+import k7tech.agency.uiskills.MainActivityViewModel
 import k7tech.agency.uiskills.R
 import k7tech.agency.uiskills.databinding.FragmentFeedItemsBinding
-import k7tech.agency.uiskills.feed.FeedFragmentDirections
-import k7tech.agency.uiskills.feed.FeedViewModel
 import k7tech.agency.uiskills.items.MyItemClickListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FeedHistoryFragment : Fragment(), MyItemClickListener {
 
-    private val viewModel: FeedViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: MainActivityViewModel by activityViewModels()
     private val historyAdapter = HistoryAdapter(this)
     private var _binding: FragmentFeedItemsBinding? = null
     private val binding
@@ -41,14 +39,14 @@ class FeedHistoryFragment : Fragment(), MyItemClickListener {
             historyAdapter.submitList(newList)
         })
 
-        viewModel.title.observe(viewLifecycleOwner, {
+        viewModel.pair.observe(viewLifecycleOwner, {
             lifecycleScope.launchWhenResumed {
                 /*
                 Items are checked properly when the fragment's view has been created first. I.e. when the user
                 has opened the fragment. If the fragment hasn't been opened yet the checking mechanism will give
                 unexpected results.
                  */
-                checkItem(it)
+                if (it.first) checkItem(it.second)
             }
         })
     }
@@ -67,7 +65,7 @@ class FeedHistoryFragment : Fragment(), MyItemClickListener {
 
     override fun onItemClick(item: Item) {
         viewModel.onItemClicked(item)
-        findNavController().navigate(FeedFragmentDirections.toBottomSheet(item.title))
+        viewModel.displayBottomSheet(item.title)
     }
 
     override fun onDestroy() {
