@@ -96,7 +96,8 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
         val result: Boolean
 
         if (bottomSheetView != child) {
-            // if main view clip against the slider so that the shadow is only drawn above the main view content.
+            // if main view, clip it against the bottom edge of the screen so that when the bottom sheet expands,only the
+            // area above the sheet is dimmed.
             canvas?.getClipBounds(rect)
             canvas?.clipRect(rect)
 
@@ -225,8 +226,8 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
         setInternalSheetState(state)
 
         when (state) {
-            BottomSheetState.EXPANDED -> smoothSlideTo(anchorPoint)
-            BottomSheetState.HIDDEN -> smoothSlideTo(0.0f)
+            BottomSheetState.EXPANDED -> smoothSlide(anchorPoint)
+            BottomSheetState.HIDDEN -> smoothSlide(0.0f)
             BottomSheetState.SCROLLING -> throw IllegalStateException("Sheet cannot be scrolling")
         }
     }
@@ -276,12 +277,11 @@ class MyBottomSheet @JvmOverloads constructor(context: Context?, attrs: Attribut
     }
 
     /**
-     * Smoothly animate bottomSheetView to the target X position.
-     *
-     * @param expandedOffset position to animate to
+     * Smoothly animate bottomSheetView to the position with the specified
+     * @param offset
      */
-    private fun smoothSlideTo(expandedOffset: Float) {
-        val topPosition = computeTopPosition(expandedOffset)
+    private fun smoothSlide(offset: Float) {
+        val topPosition = computeTopPosition(offset)
 
         if (viewDragHelper.smoothSlideViewTo(bottomSheetView, bottomSheetView.left, topPosition)) {
             ViewCompat.postInvalidateOnAnimation(this)
